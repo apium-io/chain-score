@@ -13,11 +13,13 @@
     "@heroicons/react": "^2.1.5",
     "@metamask/sdk": "^0.28.4",
     "@metamask/sdk-react": "^0.28.4",
+    "@wagmi/chains": "^1.8.0",
     "ethers": "^6.13.2",
     "next": "14.2.11",
     "next-auth": "^4.24.7",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "wagmi": "^2.12.12"
   },
   "devDependencies": {
     "@types/node": "^20",
