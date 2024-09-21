@@ -17,23 +17,23 @@ export default NextAuth({
         } else {
           return null;
         }
-      },
-    }),
+      }
+    })
   ],
   callbacks: {
-    async session({ session, token }: { session: any; token: any }) {
+    async session({ session, token }: { session: any, token: any }) {
       // Add the verification data to the session
       if (token.verificationData) {
         session.verificationData = token.verificationData;
       }
       return session;
     },
-    async jwt({ token, user }: { token: any; user: any }) {
+    async jwt({ token, user }: { token: any, user: any }) {
       // Store Worldcoin verification data in JWT token
       if (user?.verificationData) {
         token.verificationData = user.verificationData;
       }
       return token;
-    },
-  },
+    }
+  }
 });

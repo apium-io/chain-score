@@ -1,7 +1,9 @@
+import Layout from "@/components/layout";
 import { useState, useEffect } from "react";
 import { fetchWalletContracts, fetchTrustScore } from "./api/api";
 import { ethers } from "ethers";
 import { useWallet } from "../components/WalletContext";
+import Link from "next/link";
 import router from "next/router";
 
 const formatDate = (timestamp: bigint | number) => {
@@ -54,11 +56,7 @@ export default function IndexPage() {
   }, [walletAddress, isMounted]);
 
   const handleContractClick = (contractData: string) => {
-    router.push(
-      `/payment-history?contractId=${contractData[0]}&amount=${formatAmount(
-        contractData[3]
-      )}`
-    );
+    router.push(`/payment-history?contractId=${contractData[0]}&amount=${formatAmount(contractData[3])}`);
   };
 
   if (!isMounted) {

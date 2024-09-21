@@ -77,11 +77,11 @@ const useWeb3Provider = () => {
   useEffect(() => {
     if (typeof window.ethereum === "undefined") return;
 
-    window.ethereum.on("accountsChanged", (accounts: any) => {
+    window.ethereum.on("accountsChanged", (accounts: string[]) => {
       setState({ ...state, address: accounts[0] });
     });
 
-    window.ethereum.on("networkChanged", (network: any) => {
+    window.ethereum.on("networkChanged", (network: string) => {
       setState({ ...state, currentChain: Number(network) });
     });
 

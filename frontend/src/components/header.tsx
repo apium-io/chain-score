@@ -7,10 +7,10 @@ import {
   VerificationLevel,
 } from "@worldcoin/idkit";
 import { useSDK } from "@metamask/sdk-react";
+import router from "next/router";
 import { useWallet } from "../components/WalletContext";
 import worldCoinLogo from "../assets/worldcoin-org-wld-logo.svg";
 import Image from "next/image";
-import Link from "next/link";
 
 async function verify(
   proof: ISuccessResult,
@@ -86,7 +86,6 @@ export default function Header({
       }
 
       await sdk.terminate();
-
       setWalletAddress(undefined);
     } catch (err) {
       console.warn("Failed to disconnect..", err);
@@ -112,9 +111,12 @@ export default function Header({
       <div className="mx-auto py-4 flex items-center justify-between max-w-6xl px-4">
         {/* Logo */}
         <div className="flex items-center space-x-6">
-          <Link href="/" className="text-2xl font-bold text-gray-800">
+          <a
+            href="/"
+            className="text-3xl font-bold text-white hover:text-gray-300 transition-all duration-300"
+          >
             ChainScore
-          </Link>
+          </a>
         </div>
 
         {/* Navigation Links and Auth Buttons */}
@@ -132,7 +134,7 @@ export default function Header({
               {({ open }) => (
                 <button
                   onClick={open}
-                  className="relative inline-flex items-center justify-center px-6 py-3 font-bold text-white bg-white text-black rounded-full shadow-xl hover:shadow-2xl transform hover:scale-105 transition duration-300 ease-in-out"
+                  className="relative inline-flex items-center justify-center px-6 py-3 font-bold text-black bg-white text-black rounded-full shadow-xl hover:shadow-2xl transform hover:scale-105 transition duration-300 ease-in-out"
                 >
                   <Image
                     src={worldCoinLogo}
@@ -161,24 +163,30 @@ export default function Header({
 
               {/* Navigation Links */}
               <nav className="flex items-center space-x-6">
-                <Link
+                <a
                   href="/"
                   className="text-white font-medium hover:text-gray-200 transition-all"
                 >
                   Home
-                </Link>
-                <Link
+                </a>
+                <a
+                  href="/scores"
+                  className="text-white font-medium hover:text-gray-200 transition-all"
+                >
+                  Scores
+                </a>
+                <a
                   href="contract"
                   className="text-white font-medium hover:text-gray-200 transition-all"
                 >
                   Contract
-                </Link>
-                <Link
+                </a>
+                <a
                   href="txHistory"
                   className="text-white font-medium hover:text-gray-200 transition-all"
                 >
                   TX History
-                </Link>
+                </a>
                 {!walletAddress ? (
                   <button
                     className="rounded-full w-10 h-10 flex items-center justify-center bg-gray-100 hover:bg-gray-200 transition-colors shadow-lg hover:shadow-xl transform hover:scale-105"

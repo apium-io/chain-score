@@ -12,6 +12,7 @@ const contract = new ethers.Contract(CONTRACT_ADDRESS!, ABI, provider);
 export const fetchWalletContracts = async (walletAddress: string) => {
   try {
     const contracts = await contract.getWalletContracts(walletAddress);
+    console.log(contracts);
 
     return contracts;
   } catch (err) {
@@ -38,6 +39,19 @@ export const fetchPaymentHistory = async (contractId: string) => {
     return history;
   } catch (err) {
     throw new Error("Error fetching payment history");
+  }
+};
+
+export const fetchAllTrustScores = async () => {
+  try {
+    const score = await contract.getAllTrustScores();
+    return score;
+  } catch (err: any) {
+    if (err.message.includes("No trust scores found for this wallet")) {
+      return 0;
+    } else {
+      throw new Error("Error fetching trust score");
+    }
   }
 };
 

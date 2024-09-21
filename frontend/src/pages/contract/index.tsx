@@ -85,7 +85,6 @@ function Index() {
       );
 
       await tx.wait();
-      console.log({ tx });
       return tx;
     } catch (err) {
       console.error("Contract initialization failed", err);
@@ -97,6 +96,14 @@ function Index() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    const amountInWei = parseEther(formData.amount || "0");
+    const contractStartDateTimestamp = Math.floor(
+      new Date(formData.contractStartDate).getTime() / 1000
+    );
+    const contractEndDateTimestamp = Math.floor(
+      new Date(formData.contractEndDate).getTime() / 1000
+    );
 
     try {
       const contractData = {
