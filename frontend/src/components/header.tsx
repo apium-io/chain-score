@@ -2,10 +2,11 @@ import React, { useState } from "react";
 import { useSDK } from "@metamask/sdk-react";
 import { signIn, signOut, useSession } from "next-auth/react";
 import router from "next/router";
+import { useWallet } from "../components/WalletContext";
 
 export default function Header() {
-  const { sdk, connected } = useSDK();
-  const [account, setAccount] = React.useState<string | undefined>();
+  const { sdk } = useSDK();
+  const { walletAddress, setWalletAddress } = useWallet();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [copyStatus, setCopyStatus] = useState("Copy Address");
   const { data: session, status } = useSession();
@@ -14,10 +15,8 @@ export default function Header() {
   const handleContractClick = () => {
     router.push("/contract");
   };
-  async function handleConnectWallet(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    event: React.MouseEvent<HTMLButtonElement>
-  ): Promise<void> {
+
+  const handleConnectWallet = async () => {
     try {
       if (!sdk) {
         console.warn("MetaMask SDK is not available");
@@ -26,35 +25,43 @@ export default function Header() {
 
       const accounts = await sdk.connect();
       if (accounts.length > 0) {
-        setAccount(accounts[0]);
+        setWalletAddress(accounts[0]);
       } else {
         console.warn("No accounts returned from SDK");
       }
     } catch (err) {
       console.warn("Failed to connect..", err);
     }
-  }
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  function toggleDropdown(event: React.MouseEvent<HTMLButtonElement>): void {
-    setIsDropdownOpen((prevState) => !prevState);
-  }
+  };
 
-  function handleCopyAddress(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    event: React.MouseEvent<HTMLButtonElement>
-  ): void {
-    if (account) {
-      navigator.clipboard.writeText(account);
+  const handleDisconnectWallet = async () => {
+    try {
+      if (!sdk) {
+        console.warn("MetaMask SDK is not available");
+        return;
+      }
+
+      await sdk.terminate();
+
+      setWalletAddress(undefined);
+    } catch (err) {
+      console.warn("Failed to disconnect..", err);
+    }
+  };
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen((prevState) => !prevState);
+  };
+
+  const handleCopyAddress = () => {
+    if (walletAddress) {
+      navigator.clipboard.writeText(walletAddress);
       setCopyStatus("Copied!");
       setTimeout(() => {
         setCopyStatus("Copy Address");
       }, 1000);
     }
-  }
-
-  function handleDisconnectWallet() {
-    throw new Error("Function not implemented.");
-  }
+  };
 
   return (
     <header className="bg-white shadow-md w-full">
@@ -105,6 +112,12 @@ export default function Header() {
               {/* Navigation Links */}
               <nav className="flex items-center space-x-6">
                 <a
+                  className="text-gray-800 font-medium hover:text-indigo-600 transition-colors cursor-pointer"
+                  onClick={() => router.push("/")}
+                >
+                  Home
+                </a>
+                <a
                   href="/contract"
                   onClick={handleContractClick}
                   className="text-gray-800 font-medium hover:text-indigo-600 transition-colors"
@@ -112,13 +125,13 @@ export default function Header() {
                   Contract
                 </a>
                 <a
-                  href="txHistory"
-                  className="text-gray-800 font-medium hover:text-indigo-600 transition-colors"
+                  className="text-gray-800 font-medium hover:text-indigo-600 transition-colors cursor-pointer"
+                  onClick={() => router.push("/")}
                 >
-                  TX History
+                  Make Payment
                 </a>
 
-                {!account ? (
+                {!walletAddress ? (
                   <button
                     className="rounded-full w-10 h-10 flex items-center justify-center bg-gray-100 hover:bg-gray-200 transition-colors"
                     onClick={handleConnectWallet}
@@ -144,8 +157,11 @@ export default function Header() {
                         className="mr-2"
                       />
                       <span className="text-gray-800 font-medium hover:text-indigo-600 transition-colors">
-                        {account
-                          ? `${account.slice(0, 6)}....${account.slice(-4)}`
+                        {walletAddress
+                          ? `${walletAddress.slice(
+                              0,
+                              6
+                            )}....${walletAddress.slice(-4)}`
                           : "No account"}
                       </span>
                     </button>

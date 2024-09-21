@@ -1,0 +1,272 @@
+[
+  {
+    "inputs": [
+      { "internalType": "string", "name": "contractID", "type": "string" },
+      { "internalType": "uint256", "name": "paymentDate", "type": "uint256" },
+      { "internalType": "uint256", "name": "amount", "type": "uint256" }
+    ],
+    "name": "addBusinessContractPayment",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "string", "name": "", "type": "string" }],
+    "name": "companyContracts",
+    "outputs": [
+      { "internalType": "string", "name": "contractID", "type": "string" },
+      { "internalType": "address", "name": "fromWallet", "type": "address" },
+      { "internalType": "address", "name": "toWallet", "type": "address" },
+      { "internalType": "uint256", "name": "amount", "type": "uint256" },
+      { "internalType": "uint256", "name": "paymentDate", "type": "uint256" },
+      { "internalType": "uint256", "name": "startDate", "type": "uint256" },
+      { "internalType": "uint256", "name": "createdAt", "type": "uint256" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "string", "name": "a", "type": "string" },
+      { "internalType": "string", "name": "b", "type": "string" }
+    ],
+    "name": "compareStrings",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "name": "contractIds",
+    "outputs": [{ "internalType": "string", "name": "", "type": "string" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "createAndReturnOpenContractIds",
+    "outputs": [{ "internalType": "string[]", "name": "", "type": "string[]" }],
+    "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "string", "name": "contractId", "type": "string" }
+    ],
+    "name": "getContractDetail",
+    "outputs": [
+      {
+        "components": [
+          { "internalType": "string", "name": "contractID", "type": "string" },
+          {
+            "internalType": "address",
+            "name": "fromWallet",
+            "type": "address"
+          },
+          { "internalType": "address", "name": "toWallet", "type": "address" },
+          { "internalType": "uint256", "name": "amount", "type": "uint256" },
+          {
+            "internalType": "uint256",
+            "name": "paymentDate",
+            "type": "uint256"
+          },
+          { "internalType": "uint256", "name": "startDate", "type": "uint256" },
+          { "internalType": "uint256", "name": "createdAt", "type": "uint256" }
+        ],
+        "internalType": "struct ChainScore.companyContract",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "string", "name": "_contractId", "type": "string" }
+    ],
+    "name": "getContractStatus",
+    "outputs": [{ "internalType": "string", "name": "", "type": "string" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "string", "name": "contractId", "type": "string" }
+    ],
+    "name": "getPaymentHistory",
+    "outputs": [
+      {
+        "components": [
+          { "internalType": "string", "name": "contractId", "type": "string" },
+          {
+            "internalType": "uint256",
+            "name": "paymentDate",
+            "type": "uint256"
+          },
+          { "internalType": "uint256", "name": "amount", "type": "uint256" }
+        ],
+        "internalType": "struct ChainScore.userPayment[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "walletAddress", "type": "address" }
+    ],
+    "name": "getTrustScore",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "walletAddress", "type": "address" }
+    ],
+    "name": "getWalletContracts",
+    "outputs": [
+      {
+        "components": [
+          { "internalType": "string", "name": "contractID", "type": "string" },
+          {
+            "internalType": "address",
+            "name": "fromWallet",
+            "type": "address"
+          },
+          { "internalType": "address", "name": "toWallet", "type": "address" },
+          { "internalType": "uint256", "name": "amount", "type": "uint256" },
+          {
+            "internalType": "uint256",
+            "name": "paymentDate",
+            "type": "uint256"
+          },
+          { "internalType": "uint256", "name": "startDate", "type": "uint256" },
+          { "internalType": "uint256", "name": "createdAt", "type": "uint256" }
+        ],
+        "internalType": "struct ChainScore.companyContract[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "walletAddress", "type": "address" }
+    ],
+    "name": "getWalletContractsIds",
+    "outputs": [{ "internalType": "string[]", "name": "", "type": "string[]" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "string", "name": "contractID", "type": "string" },
+      { "internalType": "address", "name": "fromWallet", "type": "address" },
+      { "internalType": "address", "name": "toWallet", "type": "address" },
+      { "internalType": "uint256", "name": "amount", "type": "uint256" },
+      { "internalType": "uint256", "name": "paymentDate", "type": "uint256" },
+      { "internalType": "uint256", "name": "startDate", "type": "uint256" }
+    ],
+    "name": "initializeBusinessContract",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "string", "name": "contractID", "type": "string" }
+    ],
+    "name": "payContract",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "string", "name": "_contractId", "type": "string" },
+      { "internalType": "string", "name": "_status", "type": "string" }
+    ],
+    "name": "setContractStatus",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "", "type": "address" },
+      { "internalType": "uint256", "name": "", "type": "uint256" }
+    ],
+    "name": "trustScorePerContracts",
+    "outputs": [
+      { "internalType": "string", "name": "contractId", "type": "string" },
+      { "internalType": "address", "name": "walletAddress", "type": "address" },
+      { "internalType": "uint256", "name": "score", "type": "uint256" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "", "type": "address" },
+      { "internalType": "uint256", "name": "", "type": "uint256" }
+    ],
+    "name": "trustScores",
+    "outputs": [
+      { "internalType": "address", "name": "walletAddress", "type": "address" },
+      { "internalType": "uint256", "name": "avScore", "type": "uint256" },
+      { "internalType": "uint256", "name": "lastUpdatedAt", "type": "uint256" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "walletAddress", "type": "address" },
+      { "internalType": "uint256", "name": "score", "type": "uint256" },
+      { "internalType": "string", "name": "contractId", "type": "string" }
+    ],
+    "name": "updateTrustScore",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "string", "name": "", "type": "string" },
+      { "internalType": "uint256", "name": "", "type": "uint256" }
+    ],
+    "name": "userPayments",
+    "outputs": [
+      { "internalType": "string", "name": "contractId", "type": "string" },
+      { "internalType": "uint256", "name": "paymentDate", "type": "uint256" },
+      { "internalType": "uint256", "name": "amount", "type": "uint256" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "name": "users",
+    "outputs": [
+      { "internalType": "address", "name": "walletAddress", "type": "address" },
+      { "internalType": "string", "name": "name", "type": "string" },
+      { "internalType": "string", "name": "email", "type": "string" },
+      { "internalType": "string", "name": "phoneNumber", "type": "string" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "verifyPaymentsAtMidnight",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]

@@ -1,5 +1,5 @@
 {
-  "name": "chain-score",
+  "name": "eth-global-apium",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,17 +9,17 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@chakra-ui/react": "^2.8.2",
     "@ethersproject/providers": "^5.7.2",
     "@heroicons/react": "^2.1.5",
     "@metamask/sdk": "^0.28.4",
     "@metamask/sdk-react": "^0.28.4",
-    "@wagmi/chains": "^1.8.0",
     "ethers": "^6.13.2",
     "next": "14.2.11",
     "next-auth": "^4.24.7",
     "react": "^18",
     "react-dom": "^18",
-    "wagmi": "^2.12.12"
+    "uuid": "^10.0.0"
   },
   "devDependencies": {
     "@types/node": "^20",
