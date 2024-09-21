@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { fetchPaymentHistory } from "../api/api";
 import { ethers } from "ethers";
 
-const formatDate = (timestamp: BigInt | number) => {
+const formatDate = (timestamp: bigint | number) => {
   const timestampInSeconds =
     typeof timestamp === "bigint" ? Number(timestamp) : timestamp;
 
@@ -28,7 +28,7 @@ const formatAmount = (amountInWei: string) => ethers.formatEther(amountInWei);
 
 const PaymentHistoryPage = () => {
   const router = useRouter();
-  const { contractId } = router.query;
+  const { contractId, amount } = router.query;
   const [paymentHistory, setPaymentHistory] = useState<any[] | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -48,7 +48,7 @@ const PaymentHistoryPage = () => {
     }
   }, [contractId]);
   const handleMakePaymentClick = () => {
-    router.push("/payment? ");
+    router.push(`/payment?contractId=${contractId}&amount=${amount} `);
   };
   return (
     <div style={{ padding: "20px" }}>

@@ -5,7 +5,7 @@ export default function Layout({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-blue-100 via-white to-pink-100 overflow-x-hidden">
       {/* Header */}
-      <Header />
+      <Header app_id="app_staging_627c1f36530d1f0fac88c5bb1618bbfe" action="sign_in" signal="" />
 
       {/* Main Content */}
       <main className="flex-grow py-16 px-4">

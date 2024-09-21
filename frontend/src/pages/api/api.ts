@@ -12,9 +12,6 @@ const contract = new ethers.Contract(CONTRACT_ADDRESS!, ABI, provider);
 export const fetchWalletContracts = async (walletAddress: string) => {
   try {
     const contracts = await contract.getWalletContracts(walletAddress);
-    console.log("Contracts:", contracts);
-
-    console.log({ contracts });
 
     return contracts;
   } catch (err) {
@@ -43,3 +40,48 @@ export const fetchPaymentHistory = async (contractId: string) => {
     throw new Error("Error fetching payment history");
   }
 };
+
+// export const initializeBusinessContract = async (data: {
+//   contractID: string;
+//   fromWallet: string;
+//   toWallet: string;
+//   amount: string;
+//   paymentDate: string;
+//   contractStartDate: string;
+// }) => {
+//   try {
+//     await provider.send("eth_requestAccounts", []);
+//     const amountInWei = BigInt(Math.floor(parseFloat(data.amount) * 1e18));
+
+//     const paymentDateTimestamp = Math.floor(
+//       new Date(data.paymentDate).getTime() / 1000
+//     );
+//     const startDateTimestamp = Math.floor(
+//       new Date(data.contractStartDate).getTime() / 1000
+//     );
+
+//     console.log("Contract data being sent:", {
+//       contractID: data.contractID,
+//       fromWallet: data.fromWallet,
+//       toWallet: data.toWallet,
+//       amountInWei: amountInWei.toString(),
+//       paymentDateTimestamp: paymentDateTimestamp.toString(),
+//       startDateTimestamp: startDateTimestamp.toString(),
+//     });
+
+//     const tx = await contract.initializeBusinessContract(
+//       data.contractID,
+//       data.fromWallet,
+//       data.toWallet,
+//       amountInWei,
+//       paymentDateTimestamp,
+//       startDateTimestamp
+//     );
+
+//     await tx.wait();
+//     return tx;
+//   } catch (err) {
+//     console.error("Contract initialization failed", err);
+//     throw new Error("Failed to initialize business contract");
+//   }
+// };

@@ -125,7 +125,6 @@ function Index() {
       <h1 className="text-3xl font-bold text-gray-900 mb-8">
         Contract Submission
       </h1>
-      <button onClick={init}>CLICK ME</button>
       <form onSubmit={handleSubmit} className="space-y-10">
         {/* Contract Information */}
         <div className="border border-gray-200 rounded-lg p-6 shadow-sm bg-gray-50">
@@ -133,7 +132,7 @@ function Index() {
             Contract Information
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <div>
+            {/* <div>
               <label
                 htmlFor="contractID"
                 className="block text-sm font-medium text-gray-700"
@@ -149,8 +148,8 @@ function Index() {
                 onChange={handleChange}
                 required
               />
-            </div>
-            <div>
+            </div> */}
+            {/* <div>
               <label
                 htmlFor="cycle"
                 className="block text-sm font-medium text-gray-700"
@@ -168,7 +167,7 @@ function Index() {
                 <option value="quarterly">Quarterly</option>
                 <option value="yearly">Yearly</option>
               </select>
-            </div>
+            </div> */}
             <div>
               <label
                 htmlFor="contractStartDate"
@@ -203,7 +202,7 @@ function Index() {
                 required
               />
             </div>
-            <div>
+            {/* <div>
               <label
                 htmlFor="role"
                 className="block text-sm font-medium text-gray-700"
@@ -220,14 +219,14 @@ function Index() {
                 <option value="Payer">Payer</option>
                 <option value="Receiver">Receiver</option>
               </select>
-            </div>
+            </div> */}
             <div>
               <label
                 htmlFor="walletAddress"
                 className="block text-sm font-medium text-gray-700"
               >
                 {formData.role === "Payer"
-                  ? "To Wallet Address"
+                  ? "Receiver Wallet Address"
                   : "From Wallet Address"}
               </label>
               <input

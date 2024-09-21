@@ -1,16 +1,30 @@
 import { ethers } from "ethers";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useWallet } from "../../components/WalletContext";
 import ABI from "../api/abi.json";
+import { useRouter } from "next/router";
 
-const CONTRACT_ADDRESS = "0x450Ce3AB4E268064391139bc914e4491FFe25818";
+const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_SMART_CONTRACT_ADDRESS;
 
 function MakePayment() {
   const { walletAddress } = useWallet();
+  const router = useRouter();
+  const { contractId, amount } = router.query;
+
   const [formData, setFormData] = useState({
     contractID: "",
     amount: "",
   });
+
+  // Set initial values when the query parameters are available
+  useEffect(() => {
+    if (contractId && amount) {
+      setFormData({
+        contractID: Array.isArray(contractId) ? contractId[0] : contractId,
+        amount: Array.isArray(amount) ? amount[0] : amount,
+      });
+    }
+  }, [contractId, amount]);
 
   const getContractWithSigner = async () => {
     if (typeof window.ethereum !== "undefined") {
@@ -19,21 +33,13 @@ function MakePayment() {
       const provider = new ethers.BrowserProvider(window.ethereum);
       const signer = await provider.getSigner();
 
-      return new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+      return new ethers.Contract(CONTRACT_ADDRESS!, ABI, signer);
     } else {
       throw new Error("MetaMask is not installed");
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
-
-  const payContract = async (contractID: string, amountInWei: bigint) => {
+  const payContract = async (contractID, amountInWei) => {
     try {
       const contractWithSigner = await getContractWithSigner();
       const tx = await contractWithSigner.payContract(contractID, {
@@ -48,13 +54,26 @@ function MakePayment() {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const amountInWei = BigInt(
-        Math.floor(parseFloat(formData.amount) * 1e18)
-      );
+      const parsedAmount = parseFloat(formData.amount);
+
+      // Validate amount before converting to Wei
+      if (isNaN(parsedAmount) || parsedAmount <= 0) {
+        throw new Error("Invalid amount provided");
+      }
+
+      const amountInWei = ethers.parseUnits(formData.amount, "ether");
       if (!walletAddress) {
         throw new Error("Wallet is not connected");
       }
@@ -68,19 +87,18 @@ function MakePayment() {
   };
 
   return (
-    <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
-      <h1 className="text-3xl font-bold text-gray-900 mb-8">Make a Payment</h1>
-      <form onSubmit={handleSubmit} className="space-y-10">
-        {/* Payment Information */}
-        <div className="border border-gray-200 rounded-lg p-6 shadow-sm bg-gray-50">
-          <h2 className="text-xl font-semibold text-gray-900 mb-6">
-            Payment Information
-          </h2>
+    <div className="min-h-screen flex items-center justify-center text-white">
+      <div className="w-full max-w-2xl p-8 bg-white shadow-lg rounded-lg bg-opacity-10 backdrop-filter backdrop-blur-lg border border-indigo-700 bg-gradient-to-br from-indigo-900 to-purple-900 ">
+        <h1 className="text-4xl font-bold text-center mb-8 text-indigo-300 tracking-wider">
+          Make a Payment
+        </h1>
+
+        <form onSubmit={handleSubmit} className="space-y-10">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <div>
+            <div className="relative">
               <label
                 htmlFor="contractID"
-                className="block text-sm font-medium text-gray-700"
+                className="block text-sm font-medium text-gray-300 mb-2"
               >
                 Contract ID
               </label>
@@ -88,17 +106,17 @@ function MakePayment() {
                 type="text"
                 id="contractID"
                 name="contractID"
-                className="mt-2 block w-full text-gray-500 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm px-4 py-2"
+                className="w-full p-4 bg-indigo-100 bg-opacity-20 rounded-lg border border-gray-300 focus:outline-none focus:ring-4 focus:ring-indigo-600"
                 value={formData.contractID}
                 onChange={handleChange}
                 required
               />
             </div>
 
-            <div>
+            <div className="relative">
               <label
                 htmlFor="amount"
-                className="block text-sm font-medium text-gray-700"
+                className="block text-sm font-medium text-gray-300 mb-2"
               >
                 Amount (ETH)
               </label>
@@ -107,31 +125,24 @@ function MakePayment() {
                 step="any"
                 id="amount"
                 name="amount"
-                className="mt-2 block w-full text-gray-500 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm px-4 py-2"
+                className="w-full p-4 bg-indigo-100 bg-opacity-20 rounded-lg border border-gray-300 focus:outline-none focus:ring-4 focus:ring-indigo-600"
                 value={formData.amount}
                 onChange={handleChange}
                 required
               />
             </div>
           </div>
-        </div>
 
-        {/* Submit and Cancel Buttons */}
-        <div className="flex justify-end space-x-4">
-          <button
-            type="button"
-            className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-          >
-            Submit Payment
-          </button>
-        </div>
-      </form>
+          <div className="flex justify-end space-x-4">
+            <button
+              type="submit"
+              className="py-3 px-6 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg shadow-md transform hover:-translate-y-1 hover:shadow-lg transition-all duration-300 ease-in-out"
+            >
+              Submit Payment
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }

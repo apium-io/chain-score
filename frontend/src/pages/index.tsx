@@ -52,8 +52,12 @@ export default function IndexPage() {
     fetchData();
   }, [walletAddress]);
 
-  const handleContractClick = (contractId: string) => {
-    router.push(`/payment-history?contractId=${contractId}`);
+  const handleContractClick = (contractData: string) => {
+    router.push(
+      `/payment-history?contractId=${contractData[0]}&amount=${formatAmount(
+        contractData[3]
+      )}`
+    );
   };
 
   return (
@@ -86,26 +90,26 @@ export default function IndexPage() {
           {contracts ? (
             <table className="w-full border-collapse mt-5">
               <thead>
-                <tr>
-                  <th className="border-b border-gray-200 p-2 text-gray-700 text-center">
+                <tr className="text-left">
+                  <th className="border-b border-gray-200 p-2 text-gray-700">
                     Contract ID
                   </th>
-                  <th className="border-b border-gray-200 p-2 text-gray-700 text-center">
+                  <th className="border-b border-gray-200 p-2 text-gray-700 ">
                     Payer
                   </th>
-                  <th className="border-b border-gray-200 p-2 text-gray-700 text-center">
+                  <th className="border-b border-gray-200 p-2 text-gray-700 ">
                     Receiver
                   </th>
-                  <th className="border-b border-gray-200 p-2 text-gray-700 text-center">
+                  <th className="border-b border-gray-200 p-2 text-gray-700 ">
                     Amount (ETH)
                   </th>
                   {/* <th className="border-b border-gray-200 p-2 text-gray-700 text-center">
                     Payment Date
                   </th> */}
-                  <th className="border-b border-gray-200 p-2 text-gray-700 text-center">
+                  <th className="border-b border-gray-200 p-2 text-gray-700 ">
                     Start Date
                   </th>
-                  <th className="border-b border-gray-200 p-2 text-gray-700 text-center">
+                  <th className="border-b border-gray-200 p-2 text-gray-700 ">
                     Created At
                   </th>
                 </tr>
@@ -114,13 +118,13 @@ export default function IndexPage() {
                 {contracts.map((contract, index) => (
                   <tr key={index} className="hover:bg-gray-100">
                     <td
-                      className="border-b border-gray-200 p-2 text-indigo-600 hover:text-red-600 text-center cursor-pointer"
-                      onClick={() => handleContractClick(contract[0])}
+                      className="border-b border-gray-200 p-2 text-indigo-600 hover:text-red-600 cursor-pointer"
+                      onClick={() => handleContractClick(contract)}
                     >
                       {contract[0]}
                     </td>
                     <td
-                      className="border-b border-gray-200 p-2 text-gray-700 hover:text-indigo-600 text-center cursor-pointer"
+                      className="border-b border-gray-200 p-2 text-gray-700 hover:text-indigo-600 cursor-pointer"
                       onClick={() =>
                         router.push(
                           `/wallet-contracts?walletAddress=${contract[1]}`
@@ -130,7 +134,7 @@ export default function IndexPage() {
                       {contract[1].slice(0, 6)}....{contract[1].slice(-4)}
                     </td>
                     <td
-                      className="border-b border-gray-200 p-2 text-gray-700 hover:text-indigo-600 text-center cursor-pointer"
+                      className="border-b border-gray-200 p-2 text-gray-700 hover:text-indigo-600 cursor-pointer"
                       onClick={() =>
                         router.push(
                           `/wallet-contracts?walletAddress=${contract[2]}`
@@ -139,16 +143,16 @@ export default function IndexPage() {
                     >
                       {contract[2].slice(0, 6)}....{contract[2].slice(-4)}
                     </td>
-                    <td className="border-b border-gray-200 p-2 text-gray-700 text-center">
+                    <td className="border-b border-gray-200 p-2 text-gray-700">
                       {formatAmount(contract[3].toString())}
                     </td>
                     {/* <td className="border-b border-gray-200 p-2 text-gray-700 text-center">
                       {formatDate(contract[4])}
                     </td> */}
-                    <td className="border-b border-gray-200 p-2 text-gray-700 text-center">
+                    <td className="border-b border-gray-200 p-2 text-gray-700">
                       {formatDate(contract[5])}
                     </td>
-                    <td className="border-b border-gray-200 p-2 text-gray-700 text-center">
+                    <td className="border-b border-gray-200 p-2 text-gray-700">
                       {formatDate(contract[6])}
                     </td>
                   </tr>
