@@ -5,7 +5,6 @@ pragma solidity ^0.8.24;
 // import "hardhat/console.sol";
 
 contract ChainScore {
-  // optional struct- if we want to map wallet address to a user/business
     struct user {
         address walletAddress;
         string name;
@@ -48,7 +47,6 @@ contract ChainScore {
 
     string[] public contractIds;
 
-    // mappings
     mapping(address => user) public users;
     mapping(string => companyContract) public companyContracts;
     mapping(string => userPayment[]) public userPayments;
@@ -58,7 +56,6 @@ contract ChainScore {
     mapping (string => trustScorePerContract) private contractScore;
 
     function initializeBusinessContract(string memory contractID, address fromWallet, address toWallet, uint amount, uint paymentDate, uint startDate) public {
-        // Check if all parameters are provided
         require(bytes(contractID).length > 0, "Contract ID is required");
         require(fromWallet != address(0), "From wallet address is required");
         require(toWallet != address(0), "To wallet address is required");
@@ -66,10 +63,8 @@ contract ChainScore {
         require(paymentDate > 0, "Payment date is not valid");
         require(startDate > 0, "Start date is not valid");
 
-        // throw an error if the contract already exists
         require(bytes(companyContracts[contractID].contractID).length == 0, "Contract already exists");
 
-        // initialize the contract
         companyContract storage newContract = companyContracts[contractID];
         newContract.contractID = contractID;
         newContract.fromWallet = fromWallet;
@@ -92,35 +87,27 @@ contract ChainScore {
          // Add the trust score to the wallet's list of trust scores (array)
         trustScorePerContracts[fromWallet].push(newTrustScorePerContract);
 
-        // add the trust score to the contract id
         contractScore[contractID] = newTrustScorePerContract;
     }
 
     function payContract(string memory contractID) public payable {
-        // Check if all parameters are provided
         require(bytes(contractID).length > 0, "Contract ID is required");
 
-        // throw an error if the contract does not exist
         require(bytes(companyContracts[contractID].contractID).length > 0, "Contract does not exist");
 
-        //UPDATED: as the amount is stored in wei, we don't need to convert it to wei
         uint256 amountToPay = companyContracts[contractID].amount;
         require(msg.value == (amountToPay), "Amount sent is not matching the request amount");
 
-        // transfer the amount to the toWallet
         payable(companyContracts[contractID].toWallet).transfer(msg.value);
 
-        // add the payment to the user payments array
         addBusinessContractPayment(contractID, block.timestamp, amountToPay);
     }
 
     function addBusinessContractPayment(string memory contractID, uint paymentDate, uint amount) public {
-        // Check if all parameters are provided
         require(bytes(contractID).length > 0, "Contract ID is required");
         require(paymentDate > 0, "Payment date is not valid");
         require(amount > 0, "Amount must be greater than zero");
 
-        // Add the payment
         userPayment memory newPayment = userPayment({
             contractId: contractID,
             paymentDate: paymentDate,
@@ -130,6 +117,33 @@ contract ChainScore {
         userPayments[contractID].push(newPayment);
     }
 
+    function _stringToBytes32(string memory source) internal pure returns (bytes32 result) {
+        bytes memory tempEmptyStringTest = bytes(source);
+        if (tempEmptyStringTest.length == 0) {
+            return 0x0;
+        }
+        assembly {
+            result := mload(add(source, 32))
+        }
+    }
+
+    function setContractStatus(string memory _contractId, string memory _status) public {
+        bytes32 contractKey = _stringToBytes32(_contractId);
+        contractStatuses[contractKey] = companyContractStatus(_contractId, _status);
+    }
+
+    function getContractStatus(string memory _contractId) public view returns (string memory) {
+        bytes32 contractKey = _stringToBytes32(_contractId);
+        companyContractStatus memory statusData = contractStatuses[contractKey];
+        require(bytes(statusData.contractId).length != 0, "Contract ID does not exist.");
+        return statusData.status;
+    }
+
+
+    function createAndReturnOpenContractIds() public pure returns (string[] memory) {
+
+    }
+
     function verifyPaymentsAtMidnight() public {
         for (uint i = 0; i < contractIds.length; i++) {
             string memory contractId = contractIds[i];
@@ -137,27 +151,22 @@ contract ChainScore {
             userPayment[] storage payments = userPayments[contractId];
                 
 
-            // uint monthsSinceStartDate = 5;
             uint currentTrustScore = 0;
             uint totalPaymentsMade = payments.length;
             uint monthsSinceStartDate = monthsBetween(currentContract.startDate, block.timestamp);
 
-            //if no payments are made at all
             if (totalPaymentsMade == 0 && (totalPaymentsMade < monthsSinceStartDate)) {
                 uint daysSinceLastPayment = daysBetween(currentContract.startDate, block.timestamp);
-                // Pass the number of days late to the trust score calculation
                 currentTrustScore = calculateTrustScore(daysSinceLastPayment);
                 updateTrustScore(currentContract.fromWallet, currentTrustScore, contractId);
                 
             } else if (totalPaymentsMade == monthsSinceStartDate) {
-                // Payments up to date, pass 0 to the trust score calculation
                currentTrustScore = calculateTrustScore(0);
                 updateTrustScore(currentContract.fromWallet, currentTrustScore, contractId);
              
             } else if (totalPaymentsMade < monthsSinceStartDate) {
                 uint lastPaymentDate = payments[totalPaymentsMade - 1].paymentDate;
                 uint daysSinceLastPayment = daysBetween(lastPaymentDate, block.timestamp);
-                // Pass the number of days late to the trust score calculation
                 currentTrustScore = calculateTrustScore(daysSinceLastPayment);
                 updateTrustScore(currentContract.fromWallet, currentTrustScore, contractId);
             }
@@ -166,17 +175,14 @@ contract ChainScore {
 
 
     function monthsBetween(uint startDate, uint currentDate) internal pure returns (uint) {
-        // Ensure the dates are in the correct order, swapping them if necessary
         if (currentDate < startDate) {
             uint temp = startDate;
             startDate = currentDate;
             currentDate = temp;
         }
         
-        // Number of seconds in an approximate month (30 days)
-        uint secondsInMonth = 30 * 86400; // 30 days * 86400 seconds/day
+        uint secondsInMonth = 30 * 86400;
 
-        // Calculate the difference in seconds and divide by secondsInMonth
         uint differenceInSeconds = currentDate - startDate;
         return differenceInSeconds / secondsInMonth;
     }
@@ -185,10 +191,8 @@ contract ChainScore {
     function daysBetween(uint startDate, uint endDate) internal pure returns (uint) {
         uint differenceInSeconds = endDate >= startDate ? (endDate - startDate) : (startDate - endDate);
 
-        // Number of seconds in a day
         uint secondsInDay = 86400;
 
-        // To round to the nearest day, we add half of `secondsInDay` to the difference before dividing
         return (differenceInSeconds + (secondsInDay / 2)) / secondsInDay;
     }
 
@@ -199,20 +203,15 @@ contract ChainScore {
 
     function updateTrustScore(address walletAddress, uint score, string memory contractId) public {
 
-        // fetch the trust score for the contract
         trustScorePerContract storage contractTrustScore = contractScore[contractId];
 
-        // update the score for the contract
         contractTrustScore.score = score;
 
-        // fetch the project scores for the wallets address
         trustScorePerContract[] storage scores = trustScorePerContracts[walletAddress];
 
-        // loop and find the score for the contract id
         for (uint i = 0; i < scores.length; i++) {
             bool isCorrectContract = compareStrings(scores[i].contractId, contractId);
             if (isCorrectContract){
-                // update the score for the project
                 scores[i].score = score;
                 break;
             }
@@ -221,22 +220,90 @@ contract ChainScore {
 
     function calculateTrustScore(uint daysLate) internal pure returns (uint) {
 
-        // if daysLate is 0, return 10
         if (daysLate == 0) {
             return 10;
         }
 
-        // if daysLate is between 1-90 return 5
         if (daysLate > 0 && daysLate <= 90) {
             return 5;
         }
 
-        // if daysLate is more than 90, return 0
         if (daysLate > 90) {
             return 0;
         }
 
         return 0;
     
+    }
+
+    function getTrustScore(address walletAddress) public view returns (uint) {
+
+        trustScorePerContract[] storage scores = trustScorePerContracts[walletAddress];
+        require(scores.length > 0, "No trust scores found for this wallet");
+
+        uint totalScore = 0;
+        for (uint i = 0; i < scores.length; i++) {
+            totalScore += scores[i].score;
+        }
+
+        if (scores.length == 0) {
+            return 0;
+        }
+        return ((totalScore / scores.length) *10);
+    }
+
+    function getWalletContractsIds(address walletAddress) public view returns (string[] memory) {
+        string[] memory contracts = new string[](contractIds.length);
+        uint contractCount = 0;
+        for (uint i = 0; i < contractIds.length; i++) {
+            string memory contractId = contractIds[i];
+            companyContract storage currentContract = companyContracts[contractId];
+            if (currentContract.fromWallet == walletAddress || currentContract.toWallet == walletAddress) {
+                contracts[contractCount] = contractId;
+                contractCount++;
+            }
+        }
+
+        if(contractCount == 0) {
+            return new string[](0);
+        }
+
+        string[] memory contractIdsList = new string[](contractCount);
+        for (uint i = 0; i < contractCount; i++) {
+            contractIdsList[i] = contracts[i];
+        }
+
+        return contractIdsList;
+    }
+
+    function getWalletContracts(address walletAddress) public view returns (companyContract[] memory) {
+
+        string[] memory contracts = getWalletContractsIds(walletAddress);
+        
+        if(contracts.length == 0) {
+            return new companyContract[](0);
+        }
+
+        companyContract[] memory contractsDetails = new companyContract[](contracts.length);
+        for (uint i = 0; i < contracts.length; i++) {
+            string memory contractId = contracts[i];
+            contractsDetails[i] = getContractDetail(contractId);
+        }
+        return contractsDetails;
+    }
+
+    function getContractDetail(string memory contractId) public view returns (companyContract memory) {
+        require(bytes(contractId).length > 0, "Contract ID is required");
+        require(bytes(companyContracts[contractId].contractID).length > 0, "Contract does not exist");
+
+        companyContract memory contractDetails = companyContracts[contractId];
+        return contractDetails;
+    }
+
+    function getPaymentHistory(string memory contractId) public view returns (userPayment[] memory) {
+        require(bytes(contractId).length > 0, "Contract ID is required");
+        require(bytes(companyContracts[contractId].contractID).length > 0, "Contract does not exist");
+
+        return userPayments[contractId];
     }
 }
