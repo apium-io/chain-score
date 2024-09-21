@@ -9,8 +9,12 @@ const config: HardhatUserConfig = {
   solidity: "0.8.24",
   networks: {
     amoy: {
-      url: process.env.INFURA_URL, // Replace with the correct URL for Amoy
+      url: `https://linea-mainnet.infura.io/v3/${process.env.INFURA_API_KEY}`, // Replace with the correct URL for Amoy
       accounts: [process.env.PRIVATE_KEY!], // Ensure your private key is stored in an environment variable
+    },
+    linea_mainnet: {
+      url: `https://linea-mainnet.infura.io/v3/${process.env.INFURA_API_KEY}`,
+      accounts: [process.env.PRIVATE_KEY!],
     },
   },
   etherscan: {
