@@ -4,7 +4,7 @@ pragma solidity ^0.8.24;
 // Uncomment this line to use console.log
 // import "hardhat/console.sol";
 
-contract B2BContract {
+contract ChainScore {
     struct user {
         address walletAddress;
         string name;
@@ -16,7 +16,7 @@ contract B2BContract {
         string contractID;
         address fromWallet;
         address toWallet;
-        uint amount; 
+        uint amount;
         uint paymentDate;
         uint startDate;
         uint createdAt;
