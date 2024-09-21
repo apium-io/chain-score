@@ -19,7 +19,11 @@ export class Db {
 
     async fetchData(params: QueryParams) {
         try {
-            return await this.docClient.send(new QueryCommand(params));
+            const data = await this.docClient.send(new QueryCommand(params));
+            if (!data.Items?.length) {
+                throw new Error('DB_FETCH_FAILED');
+            }
+            return data.Items[0];
         } catch (error) {
             console.error(error);
             throw new Error('DB_FETCH_FAILED');
