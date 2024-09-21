@@ -46,6 +46,7 @@ contract ChainScore {
     }
 
     string[] public contractIds;
+    address[] public allWalletAddresses;
 
     mapping(address => user) public users;
     mapping(string => companyContract) public companyContracts;
@@ -88,6 +89,30 @@ contract ChainScore {
         trustScorePerContracts[fromWallet].push(newTrustScorePerContract);
 
         contractScore[contractID] = newTrustScorePerContract;
+        addWalletAddressToList(fromWallet);
+    }
+
+    function getAllWalletAddresses() public view returns (address[] memory) {
+    return allWalletAddresses;
+    }
+
+    function addWalletAddressToList(address walletAddress) public {
+        bool addressExists = false;
+  
+         
+        // Check if the wallet already exists in the allWalletAddresses array
+        for (uint i = 0; i < allWalletAddresses.length; i++) {
+            if (allWalletAddresses[i] == walletAddress) {
+                addressExists = true;
+                break;
+            }
+        }
+
+        // If the wallet is not already in the array, add it
+        if (!addressExists) {
+            allWalletAddresses.push(walletAddress);
+        }
+
     }
 
     function payContract(string memory contractID) public payable {
@@ -180,8 +205,8 @@ contract ChainScore {
             startDate = currentDate;
             currentDate = temp;
         }
-        
-        uint secondsInMonth = 30 * 86400;
+    
+        uint secondsInMonth = 30 * 86400;   
 
         uint differenceInSeconds = currentDate - startDate;
         return differenceInSeconds / secondsInMonth;
@@ -250,6 +275,23 @@ contract ChainScore {
             return 0;
         }
         return ((totalScore / scores.length) *10);
+    }
+
+    function getAllTrustScores() public view returns (address[] memory, uint[] memory) {
+        uint totalWallets = allWalletAddresses.length;
+
+        address[] memory wallets = new address[](totalWallets);
+        uint[] memory scores = new uint[](totalWallets);
+
+        for (uint i = 0; i < allWalletAddresses.length; i++) {
+                address wallet = allWalletAddresses[i];
+            uint score = getTrustScore(wallet);
+
+            wallets[i] = wallet;  
+            scores[i] = score;   
+        }
+
+           return (wallets, scores);
     }
 
     function getWalletContractsIds(address walletAddress) public view returns (string[] memory) {
