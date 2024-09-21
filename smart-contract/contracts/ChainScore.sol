@@ -4,7 +4,7 @@ pragma solidity ^0.8.24;
 // Uncomment this line to use console.log
 // import "hardhat/console.sol";
 
-contract ChainScore {
+contract B2BContract {
     struct user {
         address walletAddress;
         string name;
@@ -16,7 +16,7 @@ contract ChainScore {
         string contractID;
         address fromWallet;
         address toWallet;
-        uint amount;
+        uint amount; 
         uint paymentDate;
         uint startDate;
         uint createdAt;
@@ -43,6 +43,8 @@ contract ChainScore {
 
 
     mapping(string => companyContract) public companyContracts;
+    mapping(string => userPayment[]) public userPayments;
+
 
 
     function initializeBusinessContract(string memory contractID, address fromWallet, address toWallet, uint amount, uint paymentDate, uint startDate) public {
@@ -71,5 +73,42 @@ contract ChainScore {
         contractIds.push(contractID);
 
     }
+
+     function payContract(string memory contractID) public payable {
+        // Check if all parameters are provided
+        require(bytes(contractID).length > 0, "Contract ID is required");
+
+        // throw an error if the contract does not exist
+        require(bytes(companyContracts[contractID].contractID).length > 0, "Contract does not exist");
+
+        //UPDATED: as the amount is stored in wei, we don't need to convert it to wei
+        uint256 amountToPay = companyContracts[contractID].amount;
+        require(msg.value == (amountToPay), "Amount sent is not matching the request amount");
+
+        // transfer the amount to the toWallet
+        payable(companyContracts[contractID].toWallet).transfer(msg.value);
+
+        // add the payment to the user payments array
+        addBusinessContractPayment(contractID, block.timestamp, amountToPay);
+    }
+
+     function addBusinessContractPayment(string memory contractID, uint paymentDate, uint amount) public {
+        // Check if all parameters are provided
+        require(bytes(contractID).length > 0, "Contract ID is required");
+        require(paymentDate > 0, "Payment date is not valid");
+        require(amount > 0, "Amount must be greater than zero");
+
+        // Add the payment
+        userPayment memory newPayment = userPayment({
+            contractId: contractID,
+            paymentDate: paymentDate,
+            amount: amount
+        });
+
+        userPayments[contractID].push(newPayment);
+    }
+
+
+
 
 }
