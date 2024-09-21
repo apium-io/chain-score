@@ -47,3 +47,8 @@ iframe {
   border-radius: 0.5rem;
   filter: invert(1);
 }
+
+.modal {
+  z-index: 1000;
+  /* High z-index to ensure the modal appears on top */
+}

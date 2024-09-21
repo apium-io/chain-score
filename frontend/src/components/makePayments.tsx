@@ -1,12 +1,12 @@
 import { ethers } from "ethers";
 import React, { useState, useEffect } from "react";
-import { useWallet } from "../../components/WalletContext";
-import ABI from "../api/abi.json";
+import { useWallet } from "@/components/WalletContext";
+import ABI from "../abi.json";
 import { useRouter } from "next/router";
 
 const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_SMART_CONTRACT_ADDRESS;
 
-function MakePayment() {
+function MakePayment({ handleCloseModal }: { handleCloseModal: any }) {
   const { walletAddress } = useWallet();
   const router = useRouter();
   const { contractId, amount } = router.query;
@@ -87,15 +87,23 @@ function MakePayment() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center text-white">
-      <div className="w-full max-w-2xl p-8 bg-white shadow-lg rounded-lg bg-opacity-10 backdrop-filter backdrop-blur-lg border border-indigo-700 bg-gradient-to-br from-indigo-900 to-purple-900 ">
-        <h1 className="text-4xl font-bold text-center mb-8 text-indigo-300 tracking-wider">
-          Make a Payment
-        </h1>
+    <div className="flex items-center justify-center text-white">
+      <div className="p-8 bg-white shadow-lg rounded-lg bg-opacity-10 backdrop-filter backdrop-blur-lg border border-indigo-700 bg-gradient-to-br from-indigo-900 to-purple-900 ">
+        <div className="flex flex-row justify-between">
+          <h1 className="text-4xl font-bold text-center mb-8 text-indigo-300 tracking-wider">
+            Make a Payment
+          </h1>
+          <button
+            className="absolute top-2 right-4 text-white hover:text-gray-800 text-[20px]"
+            onClick={handleCloseModal}
+          >
+            ✕
+          </button>
+        </div>
 
         <form onSubmit={handleSubmit} className="space-y-10">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <div className="relative">
+            <div className="relative ">
               <label
                 htmlFor="contractID"
                 className="block text-sm font-medium text-gray-300 mb-2"
@@ -110,6 +118,7 @@ function MakePayment() {
                 value={formData.contractID}
                 onChange={handleChange}
                 required
+                disabled
               />
             </div>
 
@@ -129,11 +138,18 @@ function MakePayment() {
                 value={formData.amount}
                 onChange={handleChange}
                 required
+                disabled
               />
             </div>
           </div>
 
           <div className="flex justify-end space-x-4">
+            <button
+              onClick={handleCloseModal}
+              className="py-3 px-6 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg shadow-md transform hover:-translate-y-1 hover:shadow-lg transition-all duration-300 ease-in-out"
+            >
+              Cancel
+            </button>
             <button
               type="submit"
               className="py-3 px-6 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg shadow-md transform hover:-translate-y-1 hover:shadow-lg transition-all duration-300 ease-in-out"

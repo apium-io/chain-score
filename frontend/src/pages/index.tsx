@@ -23,9 +23,14 @@ export default function IndexPage() {
   const [contracts, setContracts] = useState<any[] | null>(null);
   const [trustScore, setTrustScore] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [isMounted, setIsMounted] = useState(false); // New state to track if the component is mounted
 
   useEffect(() => {
-    if (!walletAddress) {
+    setIsMounted(true); // Indicate that the component has mounted
+  }, []);
+
+  useEffect(() => {
+    if (!walletAddress || !isMounted) {
       setContracts(null);
       setTrustScore(null);
       setError(null);
@@ -34,11 +39,7 @@ export default function IndexPage() {
 
     const fetchData = async () => {
       try {
-        console.log({ walletAddress });
-
         const contracts = await fetchWalletContracts(walletAddress);
-        console.log({ contracts });
-
         setContracts(contracts);
 
         const score = await fetchTrustScore(walletAddress);
@@ -50,7 +51,7 @@ export default function IndexPage() {
     };
 
     fetchData();
-  }, [walletAddress]);
+  }, [walletAddress, isMounted]);
 
   const handleContractClick = (contractData: string) => {
     router.push(
@@ -59,6 +60,10 @@ export default function IndexPage() {
       )}`
     );
   };
+
+  if (!isMounted) {
+    return null; // Do not render the component on the server or until the client has mounted
+  }
 
   return (
     <div style={{ padding: "20px" }}>
@@ -103,9 +108,6 @@ export default function IndexPage() {
                   <th className="border-b border-gray-200 p-2 text-gray-700 ">
                     Amount (ETH)
                   </th>
-                  {/* <th className="border-b border-gray-200 p-2 text-gray-700 text-center">
-                    Payment Date
-                  </th> */}
                   <th className="border-b border-gray-200 p-2 text-gray-700 ">
                     Start Date
                   </th>
@@ -146,9 +148,6 @@ export default function IndexPage() {
                     <td className="border-b border-gray-200 p-2 text-gray-700">
                       {formatAmount(contract[3].toString())}
                     </td>
-                    {/* <td className="border-b border-gray-200 p-2 text-gray-700 text-center">
-                      {formatDate(contract[4])}
-                    </td> */}
                     <td className="border-b border-gray-200 p-2 text-gray-700">
                       {formatDate(contract[5])}
                     </td>

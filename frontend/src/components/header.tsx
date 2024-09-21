@@ -1,4 +1,3 @@
-// components/Header.tsx
 import { signIn, signOut, useSession } from "next-auth/react";
 import React, { useState } from "react";
 import {
@@ -8,10 +7,10 @@ import {
   VerificationLevel,
 } from "@worldcoin/idkit";
 import { useSDK } from "@metamask/sdk-react";
-import router from "next/router";
 import { useWallet } from "../components/WalletContext";
 import worldCoinLogo from "../assets/worldcoin-org-wld-logo.svg";
 import Image from "next/image";
+import Link from "next/link";
 
 async function verify(
   proof: ISuccessResult,
@@ -36,10 +35,9 @@ async function verify(
   if (response.ok) {
     console.log("handleVerify Success!", result);
 
-    // Use next-auth signIn to store Worldcoin verification data in session
     await signIn("credentials", {
-      verificationData: result, // Pass the verification result to next-auth
-      redirect: false, // Avoid page redirection after sign-in
+      verificationData: result,
+      redirect: false,
     });
   } else {
     throw new Error("handleVerify Error: " + result.detail);
@@ -61,10 +59,6 @@ export default function Header({
   const { walletAddress, setWalletAddress } = useWallet();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [copyStatus, setCopyStatus] = useState("Copy Address");
-
-  const handleContractClick = () => {
-    router.push("/contract");
-  };
 
   const handleConnectWallet = async () => {
     try {
@@ -114,13 +108,13 @@ export default function Header({
   };
 
   return (
-    <header className="bg-white shadow-md w-full">
+    <header className="bg-gradient-to-r from-indigo-500 via-purple-600 to-pink-600 shadow-md w-full">
       <div className="mx-auto py-4 flex items-center justify-between max-w-6xl px-4">
         {/* Logo */}
         <div className="flex items-center space-x-6">
-          <a href="/" className="text-2xl font-bold text-gray-800">
+          <Link href="/" className="text-2xl font-bold text-gray-800">
             ChainScore
-          </a>
+          </Link>
         </div>
 
         {/* Navigation Links and Auth Buttons */}
@@ -138,7 +132,7 @@ export default function Header({
               {({ open }) => (
                 <button
                   onClick={open}
-                  className="relative inline-flex items-center justify-center px-6 py-3 font-bold text-white bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 rounded-full shadow-lg hover:shadow-2xl transform hover:scale-105 transition duration-300 ease-in-out"
+                  className="relative inline-flex items-center justify-center px-6 py-3 font-bold text-white bg-white text-black rounded-full shadow-xl hover:shadow-2xl transform hover:scale-105 transition duration-300 ease-in-out"
                 >
                   <Image
                     src={worldCoinLogo}
@@ -160,34 +154,34 @@ export default function Header({
                   <img
                     src={session.user.image}
                     alt="User Avatar"
-                    className="h-10 w-10 rounded-full border border-gray-200 shadow-sm"
+                    className="h-10 w-10 rounded-full border-2 border-gray-200 shadow-md hover:shadow-lg transition-all"
                   />
                 )}
               </div>
 
               {/* Navigation Links */}
               <nav className="flex items-center space-x-6">
-                <a
+                <Link
                   href="/"
-                  className="text-gray-800 font-medium hover:text-indigo-600 transition-colors"
+                  className="text-white font-medium hover:text-gray-200 transition-all"
                 >
                   Home
-                </a>
-                <a
+                </Link>
+                <Link
                   href="contract"
-                  className="text-gray-800 font-medium hover:text-indigo-600 transition-colors"
+                  className="text-white font-medium hover:text-gray-200 transition-all"
                 >
                   Contract
-                </a>
-                <a
+                </Link>
+                <Link
                   href="txHistory"
-                  className="text-gray-800 font-medium hover:text-indigo-600 transition-colors"
+                  className="text-white font-medium hover:text-gray-200 transition-all"
                 >
                   TX History
-                </a>
+                </Link>
                 {!walletAddress ? (
                   <button
-                    className="rounded-full w-10 h-10 flex items-center justify-center bg-gray-100 hover:bg-gray-200 transition-colors"
+                    className="rounded-full w-10 h-10 flex items-center justify-center bg-gray-100 hover:bg-gray-200 transition-colors shadow-lg hover:shadow-xl transform hover:scale-105"
                     onClick={handleConnectWallet}
                   >
                     <img
@@ -200,7 +194,7 @@ export default function Header({
                 ) : (
                   <div className="flex items-center space-x-4 relative">
                     <button
-                      className="rounded-full px-4 h-10 flex items-center justify-center bg-gray-100 hover:bg-gray-200 transition-colors"
+                      className="rounded-full px-4 h-10 flex items-center justify-center bg-gray-100 hover:bg-gray-200 transition-colors shadow-md hover:shadow-xl"
                       onClick={toggleDropdown}
                     >
                       <img
@@ -210,7 +204,7 @@ export default function Header({
                         alt="MetaMask"
                         className="mr-2"
                       />
-                      <span className="text-gray-800 font-medium hover:text-indigo-600 transition-colors">
+                      <span className="text-black font-medium hover:text-gray-300 transition-all">
                         {walletAddress
                           ? `${walletAddress.slice(
                               0,
@@ -221,7 +215,7 @@ export default function Header({
                     </button>
 
                     {isDropdownOpen && (
-                      <div className="absolute top-12 right-0 bg-white shadow-lg rounded-lg p-2 w-40">
+                      <div className="absolute top-12 right-0 bg-white shadow-lg rounded-lg p-2 w-40 transform transition-all duration-300 ease-in-out">
                         <button
                           className="text-gray-800 font-medium hover:text-red-600 w-full text-center mb-2"
                           onClick={handleCopyAddress}
@@ -244,7 +238,7 @@ export default function Header({
                 )}
                 <a
                   href={`/api/auth/signout`}
-                  className="text-white bg-red-500 px-5 py-2 rounded-lg font-medium shadow-sm transition-colors"
+                  className="text-white bg-red-500 px-5 py-2 rounded-lg font-medium shadow-md hover:shadow-lg transition-all"
                   onClick={(e) => {
                     e.preventDefault();
                     signOut();

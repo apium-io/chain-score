@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 
 interface WalletContextType {
   walletAddress: string | undefined;
@@ -7,12 +7,23 @@ interface WalletContextType {
 
 const WalletContext = createContext<WalletContextType | undefined>(undefined);
 
-export const WalletProvider: React.FC<{ children: ReactNode }> = ({
-  children,
-}) => {
-  const [walletAddress, setWalletAddress] = useState<string | undefined>(
-    undefined
-  );
+export const WalletProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const [walletAddress, setWalletAddress] = useState<string | undefined>(() => {
+    // Load the wallet address from localStorage (if present)
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("walletAddress") || undefined;
+    }
+    return undefined;
+  });
+
+  // Effect to store the walletAddress in localStorage when it changes
+  useEffect(() => {
+    if (walletAddress) {
+      localStorage.setItem("walletAddress", walletAddress);
+    } else {
+      localStorage.removeItem("walletAddress");
+    }
+  }, [walletAddress]);
 
   return (
     <WalletContext.Provider value={{ walletAddress, setWalletAddress }}>

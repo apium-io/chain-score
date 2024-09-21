@@ -4,7 +4,7 @@ import ABI from "../pages/api/abi.json";
 
 const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_SMART_CONTRACT_ADDRESS;
 
-const useGreetingContract = (state) => {
+const useGreetingContract = (state: any) => {
   //   const { state } = useWeb3Context() as IWeb3Context;
 
   return useMemo(

@@ -3,7 +3,7 @@ import { fetchWalletContracts, fetchTrustScore } from "../api/api";
 import { ethers } from "ethers";
 import { useRouter } from "next/router";
 
-const formatDate = (timestamp: BigInt | number) => {
+const formatDate = (timestamp: bigint | number) => {
   const timestampInSeconds =
     typeof timestamp === "bigint" ? Number(timestamp) : timestamp;
 
@@ -15,7 +15,7 @@ const formatDate = (timestamp: BigInt | number) => {
   });
 };
 
-const formatDateTime = (timestamp: BigInt | number) => {
+const formatDateTime = (timestamp: bigint | number) => {
   const timestampInSeconds =
     typeof timestamp === "bigint" ? Number(timestamp) : timestamp;
 
@@ -41,7 +41,7 @@ const formatAmount = (amountInWei: string) => ethers.formatEther(amountInWei);
 export default function WalletContracts() {
   const router = useRouter();
   const { walletAddress } = router.query;
-  const [contracts, setContracts] = useState<any[] | null>(null);
+  const [contracts, setContracts] = useState<unknown[] | null>(null);
   const [trustScore, setTrustScore] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -129,7 +129,7 @@ export default function WalletContracts() {
             </tr>
           </thead>
           <tbody>
-            {contracts.map((contract, index) => (
+            {contracts.map((contract: any, index: number) => (
               <tr key={index} className="hover:bg-gray-100">
                 <td
                   className="border-b border-gray-200 p-2 text-gray-700 text-center cursor-pointer"
