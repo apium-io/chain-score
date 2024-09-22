@@ -11,6 +11,7 @@ import router from "next/router";
 import { useWallet } from "../components/WalletContext";
 import worldCoinLogo from "../assets/worldcoin-org-wld-logo.svg";
 import Image from "next/image";
+import Link from "next/link";
 
 async function verify(
   proof: ISuccessResult,
@@ -111,12 +112,12 @@ export default function Header({
       <div className="mx-auto py-4 flex items-center justify-between max-w-6xl px-4">
         {/* Logo */}
         <div className="flex items-center space-x-6">
-          <a
+          <Link
             href="/"
             className="text-3xl font-bold text-white hover:text-gray-300 transition-all duration-300"
           >
             ChainScore
-          </a>
+          </Link>
         </div>
 
         {/* Navigation Links and Auth Buttons */}
@@ -163,30 +164,30 @@ export default function Header({
 
               {/* Navigation Links */}
               <nav className="flex items-center space-x-6">
-                <a
+                <Link
                   href="/"
                   className="text-white font-medium hover:text-gray-200 transition-all"
                 >
                   Home
-                </a>
-                <a
+                </Link>
+                <Link
                   href="/scores"
                   className="text-white font-medium hover:text-gray-200 transition-all"
                 >
                   Scores
-                </a>
-                <a
+                </Link>
+                <Link
                   href="contract"
                   className="text-white font-medium hover:text-gray-200 transition-all"
                 >
                   Contract
-                </a>
-                <a
+                </Link>
+                {/* <Link
                   href="txHistory"
                   className="text-white font-medium hover:text-gray-200 transition-all"
                 >
                   TX History
-                </a>
+                </Link> */}
                 {!walletAddress ? (
                   <button
                     className="rounded-full w-10 h-10 flex items-center justify-center bg-gray-100 hover:bg-gray-200 transition-colors shadow-lg hover:shadow-xl transform hover:scale-105"

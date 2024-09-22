@@ -1,4 +1,4 @@
-import { ethers } from "ethers";
+import { ethers, parseEther } from "ethers";
 import React, { useState } from "react";
 import { useWallet } from "../../components/WalletContext";
 import { v7 as uuidv7 } from "uuid";

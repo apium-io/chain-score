@@ -8,12 +8,12 @@ function Index() {
   const [isMounted, setIsMounted] = useState(false);
 
   const CHAIN_ID = "0x13882" as const;
-  const CONTRACT_ADDRESS = "0xb75717DcC95a19b1e297020F9C85a4789e54B31a";
+  const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_SMART_CONTRACT_ADDRESS;
 
   const provider = new ethers.JsonRpcProvider(
     process.env.NEXT_PUBLIC_INFURA_API_KEY
   );
-  const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, provider);
+  const contract = new ethers.Contract(CONTRACT_ADDRESS!, ABI, provider);
 
   useEffect(() => {
     setIsMounted(true);
@@ -39,11 +39,15 @@ function Index() {
         );
 
         console.log(formattedScores);
-
         setTrustScores(formattedScores);
-      } catch (err: Error) {
-        setError(err.message);
-        console.error(err);
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          setError(err.message);
+          console.error(err);
+        } else {
+          setError("An unknown error occurred");
+          console.error("An unknown error occurred", err);
+        }
       }
     };
 
@@ -65,7 +69,6 @@ function Index() {
         </thead>
         <tbody>
           {trustScores ? (
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             trustScores.map(
               (
                 scoreData: { walletAddress: string; score: any },
